@@ -1,0 +1,51 @@
+# Основные плагины
+ant:latest
+build-timeout:latest
+credentials-binding:latest
+timestamper:latest
+ws-cleanup:latest
+gradle:latest
+workflow-aggregator:latest
+github-branch-source:latest
+pipeline-github-lib:latest
+pipeline-stage-view:latest
+git:latest
+ssh-slaves:latest
+matrix-auth:latest
+pam-auth:latest
+ldap:latest
+
+# Docker плагины
+docker-workflow:latest
+docker-plugin:latest
+
+# Kubernetes плагины
+kubernetes:latest
+kubernetes-cli:latest
+
+# Тестирование и качество кода
+junit:latest
+jacoco:latest
+sonar:latest
+checkmarx:latest
+
+# Уведомления
+email-ext:latest
+slack:latest
+
+# Интеграция с системами контроля версий
+github:latest
+gitlab-plugin:latest
+bitbucket:latest
+
+# Дополнительные утилиты
+build-name-setter:latest
+description-setter:latest
+envinject:latest
+parameterized-trigger:latest
+copyartifact:latest
+publish-over-ssh:latest
+ssh-agent:latest
+
+# Blue Ocean (современный интерфейс)
+blueocean:latest

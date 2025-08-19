@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # PostgreSQL Database
@@ -136,8 +136,25 @@ services:
     networks:
       - cinemaabyss-network
 
+  # Jenkins CI/CD
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: cinemaabyss-jenkins
+    ports:
+      - "8091:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    user: root
+    networks:
+      - cinemaabyss-network
+
 volumes:
   postgres-data:
+  jenkins-data:
 
 networks:
   cinemaabyss-network:
