@@ -1,0 +1,198 @@
+_format_version: "3.0"
+_transform: true
+
+# Определение сервисов (upstream services)
+services:
+  # Старый монолитный сервис
+  - name: monolith-service
+    url: http://monolith:3280
+    protocol: http
+    host: monolith
+    port: 3280
+    path: /
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    retries: 5
+    tags: [monolith, legacy]
+
+  # Новый микросервис фильмов
+  - name: movies-microservice
+    url: http://movies-service:3281
+    protocol: http
+    host: movies-service
+    port: 3281
+    path: /
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    retries: 5
+    tags: [microservice, movies]
+
+  # Микросервис событий
+  - name: events-service
+    url: http://events-service:3282
+    protocol: http
+    host: events-service
+    port: 3282
+    path: /
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    retries: 5
+    tags: [microservice, events]
+
+# Определение Upstream pools для load balancing
+upstreams:
+  # Пул для фильмов с весовым распределением
+  - name: movies-upstream
+    algorithm: round-robin
+    hash_on: none
+    hash_fallback: none
+    healthchecks:
+      active:
+        type: http
+        http_path: /health
+        healthy:
+          interval: 5
+          successes: 3
+        unhealthy:
+          interval: 5
+          http_failures: 3
+    tags: [movies, load-balancing]
+    targets:
+      # Монолит получает 50% трафика
+      - target: monolith:3280
+        weight: 50
+        tags: [monolith]
+      # Микросервис получает 50% трафика  
+      - target: movies-service:3281
+        weight: 50
+        tags: [microservice]
+
+# Определение маршрутов
+routes:
+  # Маршрут для API фильмов (с канареечным развертыванием)
+  - name: movies-api-route
+    service: monolith-service
+    protocols: [http, https]
+    methods: [GET, POST, PUT, DELETE, PATCH]
+    paths: ["/api/movies"]
+    strip_path: false
+    preserve_host: false
+    tags: [movies, api, canary]
+
+  # Маршрут для API событий
+  - name: events-api-route
+    service: events-service
+    protocols: [http, https]
+    methods: [GET, POST, PUT, DELETE, PATCH]
+    paths: ["/api/events"]
+    strip_path: false
+    preserve_host: false
+    tags: [events, api]
+
+  # Маршрут для health check
+  - name: health-route
+    service: monolith-service
+    protocols: [http, https]
+    methods: [GET]
+    paths: ["/health", "/api/health"]
+    strip_path: false
+    preserve_host: false
+    tags: [health, monitoring]
+
+  # Основной маршрут для всего остального трафика
+  - name: default-route
+    service: monolith-service
+    protocols: [http, https]
+    methods: [GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS]
+    paths: ["/"]
+    strip_path: false
+    preserve_host: false
+    tags: [default, fallback]
+
+# Определение плагинов
+plugins:
+  # Канареечное развертывание для фильмов
+  - name: request-transformer
+    route: movies-api-route
+    config:
+      add:
+        headers:
+          - "X-Kong-Route:movies-canary"
+          - "X-Migration-Stage:canary"
+    tags: [movies, headers]
+
+  # Rate limiting для API
+  - name: rate-limiting
+    route: movies-api-route
+    config:
+      minute: 100
+      hour: 1000
+      policy: local
+      fault_tolerant: true
+      hide_client_headers: false
+    tags: [rate-limiting, movies]
+
+  - name: rate-limiting
+    route: events-api-route  
+    config:
+      minute: 150
+      hour: 1500
+      policy: local
+      fault_tolerant: true
+      hide_client_headers: false
+    tags: [rate-limiting, events]
+
+  # CORS для всех маршрутов
+  - name: cors
+    config:
+      origins: ["*"]
+      methods: [GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD]
+      headers: [Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Auth-Token, X-Migration-Stage, X-Kong-Route]
+      exposed_headers: [X-Auth-Token, X-Kong-Route, X-Migration-Stage]
+      credentials: true
+      max_age: 3600
+    tags: [cors, global]
+
+  # Логирование запросов (для мониторинга канареечного развертывания)
+  - name: file-log
+    route: movies-api-route
+    config:
+      path: /dev/stdout
+      reopen: true
+    tags: [logging, movies]
+
+  # Prometheus метрики
+  - name: prometheus
+    config:
+      per_consumer: false
+      status_code_metrics: true
+      latency_metrics: true
+      bandwidth_metrics: true
+      upstream_health_metrics: true
+    tags: [monitoring, metrics]
+
+  # Request ID для трейсинга
+  - name: correlation-id
+    config:
+      header_name: X-Request-ID
+      generator: uuid#counter
+      echo_downstream: true
+    tags: [tracing, correlation]
+
+# Определение consumers (опционально, для аутентификации)
+consumers:
+  - username: cinemaabyss-frontend
+    tags: [frontend]
+  - username: cinemaabyss-admin
+    tags: [admin]
+
+# JWT credentials для consumers (опционально)
+jwt_secrets:
+  - consumer: cinemaabyss-frontend
+    algorithm: HS256
+    key: frontend-key
+    secret: your-secret-key-here
+    tags: [jwt, frontend]

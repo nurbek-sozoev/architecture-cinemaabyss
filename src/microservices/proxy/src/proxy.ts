@@ -5,6 +5,7 @@ import { EProxyTarget, IProxyConfig, IRoutingDecision } from './types';
 export class ProxyService {
   private config: IProxyConfig;
   private startTime: number;
+  private requestCounter: number = 0;
 
   constructor(config: IProxyConfig) {
     this.config = config;
@@ -16,8 +17,9 @@ export class ProxyService {
       return true;
     }
 
-    const randomValue = Math.floor(Math.random() * 100);
-    return randomValue < this.config.moviesMigrationPercent;
+    this.requestCounter++;
+    const position = this.requestCounter % 100;
+    return position <= this.config.moviesMigrationPercent;
   }
 
   public makeRoutingDecision(path: string): IRoutingDecision {
@@ -57,7 +59,7 @@ export class ProxyService {
         ? `${targetPath}?${new URLSearchParams(ctx.query as any).toString()}`
         : targetPath;
 
-      console.log(`Proxying ${ctx.method} ${ctx.path} to ${targetUrl}`);
+      console.log(`Proxying ${ctx.method} ${ctx.path} to ${decision.target} (${targetUrl})`);
 
       const requestConfig: AxiosRequestConfig = {
         method: ctx.method as any,
@@ -166,6 +168,7 @@ export class ProxyService {
       service: 'strangler-fig-proxy',
       gradual_migration: this.config.gradualMigration,
       movies_migration_percent: this.config.moviesMigrationPercent,
+      request_counter: this.requestCounter,
       timestamp: new Date().toISOString(),
       uptime: Date.now() - this.startTime,
       environment: this.config.environment,

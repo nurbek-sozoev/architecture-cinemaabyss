@@ -2,7 +2,6 @@ import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import cors from 'koa-cors';
 import json from 'koa-json';
-import logger from 'koa-logger';
 import Router from 'koa-router';
 
 import { loadConfig, printConfigSummary } from './config';
@@ -45,18 +44,6 @@ function createApp(): Koa {
 
   app.use(cors());
   app.use(json({ pretty: false, param: 'pretty' }));
-  app.use(logger((str) => {
-    const colorStr = str
-      .replace(/GET/g, '\x1b[32mGET\x1b[0m')
-      .replace(/POST/g, '\x1b[33mPOST\x1b[0m')
-      .replace(/PUT/g, '\x1b[34mPUT\x1b[0m')
-      .replace(/DELETE/g, '\x1b[31mDELETE\x1b[0m')
-      .replace(/2\d\d/g, '\x1b[32m$&\x1b[0m')
-      .replace(/3\d\d/g, '\x1b[36m$&\x1b[0m')
-      .replace(/4\d\d/g, '\x1b[33m$&\x1b[0m')
-      .replace(/5\d\d/g, '\x1b[31m$&\x1b[0m');
-    console.log(colorStr);
-  }));
   
   app.use(bodyParser({
     enableTypes: ['json', 'form', 'text'],
