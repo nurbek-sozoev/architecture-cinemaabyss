@@ -126,16 +126,6 @@ routes:
 
 # Определение плагинов
 plugins:
-  # Канареечное развертывание для фильмов - заголовки запроса
-  - name: request-transformer
-    route: movies-api-route
-    config:
-      add:
-        headers:
-          - "X-Kong-Route:movies-canary"
-          - "X-Migration-Stage:canary"
-    tags: [movies, headers]
-
   # Rate limiting для API
   - name: rate-limiting
     route: movies-api-route
@@ -168,7 +158,7 @@ plugins:
       max_age: 3600
     tags: [cors, global]
 
-  # Логирование запросов (для мониторинга канареечного развертывания)
+  # Логирование запросов
   - name: file-log
     route: movies-api-route
     config:

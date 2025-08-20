@@ -97,32 +97,10 @@ services:
   #   networks:
   #     - cinemaabyss-network
 
-  # Proxy Service (API Gateway) - Strangler Fig Pattern - Node.js версия
+  # Proxy Service (API Gateway)
   proxy-service:
-    build:
-      context: ./src/microservices/proxy
-      dockerfile: Dockerfile
-    container_name: cinemaabyss-proxy-service
-    depends_on:
-      - monolith
-      - movies-service
-    ports:
-      - "3200:3200"
-    environment:
-      PORT: 3200
-      MONOLITH_URL: http://monolith:3280
-      MOVIES_SERVICE_URL: http://movies-service:3281
-      EVENTS_SERVICE_URL: http://events-service:3282
-      GRADUAL_MIGRATION: "true"
-      MOVIES_MIGRATION_PERCENT: "50"
-    networks:
-      - cinemaabyss-network
-    profiles: [nodejs-proxy]
-
-  # Kong Gateway (DB-less режим)
-  kong-gateway:
     image: kong:3.4
-    container_name: cinemaabyss-kong-gateway
+    container_name: cinemaabyss-proxy-service
     restart: unless-stopped
     depends_on:
       monolith:
@@ -151,7 +129,7 @@ services:
       - "3200:3200"
       - "3201:3201"
     volumes:
-      - ./src/microservices/proxyKong/kong.yml:/kong/kong.yml:ro
+      - ./src/microservices/proxy/kong.yml:/kong/kong.yml:ro
     networks:
       - cinemaabyss-network
     healthcheck:
@@ -159,23 +137,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 3
-    profiles: [kong-proxy]
-
-  # Kong Admin UI
-  kong-ui:
-    image: pantsel/konga:latest
-    container_name: cinemaabyss-kong-ui
-    restart: unless-stopped
-    depends_on:
-      - kong-gateway
-    environment:
-      NODE_ENV: production
-      KONGA_HOOK_TIMEOUT: 120000
-    ports:
-      - "1337:1337"
-    networks:
-      - cinemaabyss-network
-    profiles: [kong-proxy, kong-ui]
 
   # Kafka UI for monitoring Kafka
   kafka-ui:
