@@ -45,8 +45,8 @@ monolith:
       cpu: 100m
       memory: 128Mi
   service:
-    port: 8080
-    targetPort: 8080
+    port: 3280
+    targetPort: 3280
     type: ClusterIP
 
 # Proxy service configuration
@@ -66,7 +66,7 @@ proxyService:
       memory: 128Mi
   service:
     port: 80
-    targetPort: 8000
+    targetPort: 3200
     type: ClusterIP
 
 # Movies service configuration
@@ -85,8 +85,8 @@ moviesService:
       cpu: 100m
       memory: 128Mi
   service:
-    port: 8081
-    targetPort: 8081
+    port: 3281
+    targetPort: 3281
     type: ClusterIP
 
 # Events service configuration
@@ -105,8 +105,8 @@ eventsService:
       cpu: 100m
       memory: 128Mi
   service:
-    port: 8082
-    targetPort: 8082
+    port: 3282
+    targetPort: 3282
     type: ClusterIP
 
 # Kafka configuration
@@ -176,7 +176,7 @@ ingress:
         - path: /api/events
           pathType: Prefix
           service: events-service
-          port: 8082
+          port: 3282
 
 # Application configuration
 config:

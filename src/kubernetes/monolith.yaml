@@ -25,10 +25,10 @@ spec:
         image:  ghcr.io/db-exp/cinemaabysstest/monolith:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 3280
         env:
         - name: PORT
-          value: "8080"
+          value: "3280"
         - name: DB_CONNECTION_STRING
           value: "postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable"
         envFrom:
@@ -46,13 +46,13 @@ spec:
         readinessProbe:
           httpGet:
             path: /api/users
-            port: 8080
+            port: 3280
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
-          httpGet:
+          httpGet:    
             path: /api/users
-            port: 8080
+            port: 3280
           initialDelaySeconds: 15
           periodSeconds: 20
       restartPolicy: Always
@@ -68,6 +68,6 @@ spec:
   selector:
     app: monolith
   ports:
-  - port: 8080
-    targetPort: 8080
+  - port: 3280
+    targetPort: 3280
   type: ClusterIP

@@ -12,13 +12,13 @@ info:
     email: support@cinemaabyss.com
 
 servers:
-  - url: http://localhost:8000
+  - url: http://localhost:3200
     description: API Gateway (Proxy Service)
-  - url: http://localhost:8080
+  - url: http://localhost:3280
     description: Монолитное приложение
-  - url: http://localhost:8081
+  - url: http://localhost:3281
     description: Микросервис фильмов
-  - url: http://localhost:8082
+  - url: http://localhost:3282
     description: Микросервис событий
 
 tags:
