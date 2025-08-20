@@ -772,19 +772,19 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:8080"
+      "value": "http://localhost:3280"
     },
     {
       "key": "moviesServiceUrl",
-      "value": "http://localhost:8081"
+      "value": "http://localhost:3281"
     },
     {
       "key": "eventsServiceUrl",
-      "value": "http://localhost:8082"
+      "value": "http://localhost:3282"
     },
     {
       "key": "proxyServiceUrl",
-      "value": "http://localhost:8000"
+      "value": "http://localhost:3200"
     },
     {
       "key": "userId",
