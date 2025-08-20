@@ -214,6 +214,7 @@ func getAllMovies(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("X-Service-Name", "monolith-service")
 	json.NewEncoder(w).Encode(movies)
 }
 

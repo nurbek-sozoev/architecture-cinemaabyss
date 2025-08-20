@@ -119,68 +119,32 @@ services:
       - cinemaabyss-network
     profiles: [nodejs-proxy]
 
-  # Kong Gateway Database
-  kong-database:
-    image: postgres:13
-    container_name: cinemaabyss-kong-db
-    environment:
-      POSTGRES_USER: kong
-      POSTGRES_PASSWORD: kongpass
-      POSTGRES_DB: kong
-    volumes:
-      - kong-data:/var/lib/postgresql/data
-    networks:
-      - cinemaabyss-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U kong"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    profiles: [kong-proxy]
-
-  # Kong bootstrap
-  kong-bootstrap:
-    image: kong:3.4
-    container_name: cinemaabyss-kong-bootstrap
-    depends_on:
-      kong-database:
-        condition: service_healthy
-    environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: kong-database
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: kongpass
-      KONG_PG_DATABASE: kong
-    command: kong migrations bootstrap
-    networks:
-      - cinemaabyss-network
-    restart: "no"
-    profiles: [kong-proxy]
-
-  # Kong Gateway
+  # Kong Gateway (DB-less режим)
   kong-gateway:
     image: kong:3.4
     container_name: cinemaabyss-kong-gateway
     restart: unless-stopped
     depends_on:
-      kong-bootstrap:
-        condition: service_completed_successfully
       monolith:
         condition: service_started
       movies-service:
         condition: service_started
     environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: kong-database
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: kongpass
-      KONG_PG_DATABASE: kong
+      # DB-less режим
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /kong/kong.yml
+
+      # Логирование
       KONG_PROXY_ACCESS_LOG: /dev/stdout
       KONG_ADMIN_ACCESS_LOG: /dev/stdout
       KONG_PROXY_ERROR_LOG: /dev/stderr
       KONG_ADMIN_ERROR_LOG: /dev/stderr
+
+      # Порты
       KONG_ADMIN_LISTEN: 0.0.0.0:3201
       KONG_PROXY_LISTEN: 0.0.0.0:3200
+
+      # Плагины и настройки
       KONG_PLUGINS: bundled
       KONG_LOG_LEVEL: info
     ports:
@@ -230,7 +194,6 @@ services:
 
 volumes:
   postgres-data:
-  kong-data:
 
 networks:
   cinemaabyss-network:
