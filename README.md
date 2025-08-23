@@ -318,3 +318,9 @@ chmod +x run-tests.sh
 #### Cкриншот обработки событий
 
 ![События](screenshots/eventsRequest.png)
+
+### Задание 4. Реализация Helm-чартов
+
+#### Результаты теста, после запуска helm чартов
+
+![Тесты](screenshots/helmChartTests.png)
