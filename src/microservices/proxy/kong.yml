@@ -1,9 +1,7 @@
 _format_version: "3.0"
 _transform: true
 
-# Определение сервисов (upstream services)
 services:
-  # Старый монолитный сервис
   - name: monolith-service
     url: http://monolith:3280
     protocol: http
@@ -16,7 +14,6 @@ services:
     retries: 5
     tags: [monolith, legacy]
 
-  # Новый микросервис фильмов
   - name: movies-microservice
     url: http://movies-service:3281
     protocol: http
@@ -29,7 +26,6 @@ services:
     retries: 5
     tags: [microservice, movies]
 
-  # Микросервис событий
   - name: events-service
     url: http://events-service:3282
     protocol: http
@@ -42,7 +38,6 @@ services:
     retries: 5
     tags: [microservice, events]
 
-  # Сервис для load-balanced upstream фильмов
   - name: movies-load-balanced
     host: movies-upstream
     protocol: http
@@ -52,11 +47,9 @@ services:
     write_timeout: 60000
     read_timeout: 60000
     retries: 5
-    tags: [load-balanced, movies, canary]
+    tags: [load-balanced, movies]
 
-# Определение Upstream pools для load balancing
 upstreams:
-  # Пул для фильмов с весовым распределением
   - name: movies-upstream
     algorithm: round-robin
     hash_on: none
@@ -73,18 +66,14 @@ upstreams:
           http_failures: 0
     tags: [movies, load-balancing]
     targets:
-      # Монолит получает 50% трафика
       - target: monolith:3280
         weight: 50
         tags: [monolith]
-      # Микросервис получает 50% трафика  
       - target: movies-service:3281
         weight: 50
         tags: [microservice]
 
-# Определение маршрутов
 routes:
-  # Маршрут для API фильмов (с канареечным развертыванием)
   - name: movies-api-route
     service: movies-load-balanced
     protocols: [http, https]
@@ -92,9 +81,8 @@ routes:
     paths: ["/api/movies"]
     strip_path: false
     preserve_host: false
-    tags: [movies, api, canary]
+    tags: [movies, api]
 
-  # Маршрут для API событий
   - name: events-api-route
     service: events-service
     protocols: [http, https]
@@ -104,7 +92,6 @@ routes:
     preserve_host: false
     tags: [events, api]
 
-  # Маршрут для health check
   - name: health-route
     service: monolith-service
     protocols: [http, https]
@@ -114,7 +101,6 @@ routes:
     preserve_host: false
     tags: [health, monitoring]
 
-  # Основной маршрут для всего остального трафика
   - name: default-route
     service: monolith-service
     protocols: [http, https]
@@ -124,30 +110,7 @@ routes:
     preserve_host: false
     tags: [default, fallback]
 
-# Определение плагинов
 plugins:
-  # Rate limiting для API
-  - name: rate-limiting
-    route: movies-api-route
-    config:
-      minute: 100
-      hour: 1000
-      policy: local
-      fault_tolerant: true
-      hide_client_headers: false
-    tags: [rate-limiting, movies]
-
-  - name: rate-limiting
-    route: events-api-route  
-    config:
-      minute: 150
-      hour: 1500
-      policy: local
-      fault_tolerant: true
-      hide_client_headers: false
-    tags: [rate-limiting, events]
-
-  # CORS для всех маршрутов
   - name: cors
     config:
       origins: ["*"]
@@ -158,15 +121,6 @@ plugins:
       max_age: 3600
     tags: [cors, global]
 
-  # Логирование запросов
-  - name: file-log
-    route: movies-api-route
-    config:
-      path: /dev/stdout
-      reopen: true
-    tags: [logging, movies]
-
-  # Prometheus метрики
   - name: prometheus
     config:
       per_consumer: false
@@ -175,11 +129,3 @@ plugins:
       bandwidth_metrics: true
       upstream_health_metrics: true
     tags: [monitoring, metrics]
-
-  # Request ID для трейсинга
-  - name: correlation-id
-    config:
-      header_name: X-Request-ID
-      generator: uuid#counter
-      echo_downstream: true
-    tags: [tracing, correlation]

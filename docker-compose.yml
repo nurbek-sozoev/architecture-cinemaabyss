@@ -97,7 +97,7 @@ services:
   #   networks:
   #     - cinemaabyss-network
 
-  # Proxy Service (API Gateway)
+  # Proxy Service (API Gateway) с Strangler Fig паттерном
   proxy-service:
     image: kong:3.4
     container_name: cinemaabyss-proxy-service
@@ -125,9 +125,14 @@ services:
       # Плагины и настройки
       KONG_PLUGINS: bundled
       KONG_LOG_LEVEL: info
+
+      # Strangler Fig конфигурация
+      MOVIES_MIGRATION_PERCENT: ${MOVIES_MIGRATION_PERCENT:-50}
+      GRADUAL_MIGRATION: ${GRADUAL_MIGRATION:-true}
+      TEMPLATE_FILE: /etc/kong/kong-template.yml
+      OUTPUT_FILE: /kong/kong.yml
     ports:
       - "3200:3200"
-      - "3201:3201"
     volumes:
       - ./src/microservices/proxy/kong.yml:/kong/kong.yml:ro
     networks:
@@ -155,6 +160,7 @@ services:
 
 volumes:
   postgres-data:
+  kong-config:
 
 networks:
   cinemaabyss-network:
