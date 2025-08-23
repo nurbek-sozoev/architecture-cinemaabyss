@@ -105,24 +105,24 @@ docker-compose up -d
 
 После запуска сервисы доступны:
 
-- Monolith: http://localhost:3200
-- Movies Service: http://localhost:8081
-- Events Service: http://localhost:8082
-- API Gateway (Proxy): http://localhost:8000
-- Kafka UI: http://localhost:8090
+- API Gateway (Proxy): http://localhost:3200
+- Monolith: http://localhost:3280
+- Movies Service: http://localhost:3281
+- Events Service: http://localhost:3282
+- Kafka UI: http://localhost:3290
 
 3. Останавливаем сервисы:
 
-   ```bash
-   docker-compose down -v
-   ```
+```bash
+docker-compose down -v
+```
 
 4. После внесения изменений рестартим:
 
-   ```bash
-   docker-compose build
-   docker-compose up -d
-   ```
+```bash
+docker-compose build
+docker-compose up -d
+```
 
 ### Kubernetes Deployment
 
@@ -158,20 +158,15 @@ kubectl apply -f src/kubernetes/postgres.yaml
 kubectl apply -f src/kubernetes/monolith.yaml
 ```
 
-5.Разверните микросервисы:
+5. Разверните микросервисы:
 
 ```bash
 kubectl apply -f src/kubernetes/movies-service.yaml
 kubectl apply -f src/kubernetes/events-service.yaml
-```
-
-6. Разверните прокси-сервис:
-
-```bash
 kubectl apply -f src/kubernetes/proxy-service.yaml
 ```
 
-7. Добавьте addon ingress
+6. Добавьте addon ingress
 
 ```bash
 minikube addons enable ingress
@@ -181,19 +176,19 @@ minikube addons enable ingress
 kubectl apply -f src/kubernetes/ingress.yaml
 ```
 
-8. Добавьте в /etc/hosts
+7. Добавьте в /etc/hosts
 
 ```bash
 127.0.0.1 cinemaabyss.example.com
 ```
 
-9. Вызовите
+8. Запуск сетевого туннеля minikube
 
 ```bash
 minikube tunnel
 ```
 
-10. Запустите тесты из папки tests/postman
+9. Запуск тесты из папки tests/postman
 
 ```bash
  npm run test:kubernetes
@@ -261,7 +256,10 @@ npm run test:docker
 
 4. Запустите тесты с помощью shell-скрипта
 1. Сделайте скрипт исполняемым
-   chmod +x run-tests.sh
+
+```
+chmod +x run-tests.sh
+```
 
 1. Запустите все тесты:
 
@@ -288,3 +286,35 @@ npm run test:docker
 2. Протестируйте постепенный переход, изменив переменную окружения MOVIES_MIGRATION_PERCENT в файле docker-compose.yml.
 
 3. Проверьте топики Kafka и сообщения через Kafka UI по адресу http://localhost:8090
+
+## Результаты работы
+
+### Задание 1. Проектирование архитектуры
+
+![Результаты тестов](screenshots/diagramc4.png)
+
+### Задание 2. Реализация прокси-сервиса
+
+#### Результаты тестов
+
+![Результаты тестов](screenshots/testResults.png)
+
+#### Kafka UI
+
+![Kafka сообщения](screenshots/kafkaMessages.png)
+
+### Задание 3. Реализация CI/CD-пайплайнов
+
+#### Github pipeline
+
+![API запрос к фильмам](screenshots/githubPipiline.png)
+
+#### Запрос к локально поднятому kubernetes
+
+![Curl запрос к API фильмов](screenshots/curlApiMovies.png)
+
+![API запрос к фильмам](screenshots/apiMoviesRequest.png)
+
+#### Cкриншот обработки событий
+
+![События](screenshots/eventsRequest.png)
