@@ -7,7 +7,7 @@ metadata:
     app: events-service
     version: v1
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: events-service
@@ -43,13 +43,13 @@ spec:
             memory: 256Mi
         readinessProbe:
           httpGet:
-            path: /events/health
+            path: /api/events/health
             port: 3282
           initialDelaySeconds: 10
           periodSeconds: 5
         livenessProbe:
           httpGet:
-            path: /events/health
+            path: /api/events/health
             port: 3282
           initialDelaySeconds: 15
           periodSeconds: 10
