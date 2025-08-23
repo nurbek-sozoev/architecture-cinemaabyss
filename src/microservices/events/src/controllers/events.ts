@@ -23,6 +23,8 @@ class EventsController {
   async createMovieEvent(ctx: Context): Promise<void> {
     try {
       const movieEvent: MovieEvent = ctx.request.body;
+
+      logger.info('createMovieEvent: Movie event', JSON.stringify(movieEvent));
       
       if (!movieEvent.movie_id || !movieEvent.title || !movieEvent.action) {
         ctx.status = 400;
@@ -44,7 +46,9 @@ class EventsController {
   async createUserEvent(ctx: Context): Promise<void> {
     try {
       const userEvent: UserEvent = ctx.request.body;
-      
+
+      logger.info('createUserEvent: User event', JSON.stringify(userEvent));
+
       if (!userEvent.user_id || !userEvent.action || !userEvent.timestamp) {
         ctx.status = 400;
         ctx.body = { error: 'Missing required fields: user_id, action, timestamp' };
@@ -65,6 +69,8 @@ class EventsController {
   async createPaymentEvent(ctx: Context): Promise<void> {
     try {
       const paymentEvent: PaymentEvent = ctx.request.body;
+
+      logger.info('createPaymentEvent: Payment event', JSON.stringify(paymentEvent));
       
       if (!paymentEvent.payment_id || !paymentEvent.user_id || 
           !paymentEvent.amount || !paymentEvent.status || !paymentEvent.timestamp) {
