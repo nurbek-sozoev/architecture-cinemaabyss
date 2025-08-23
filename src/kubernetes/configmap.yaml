@@ -11,9 +11,17 @@ data:
   DB_USER: "postgres"
 
   # Service URLs
-  MONOLITH_URL: "http://monolith:3200"
-  MOVIES_SERVICE_URL: "http://movies-service:8081"
-  EVENTS_SERVICE_URL: "http://events-service:8082"
+  MONOLITH_URL: "http://monolith:3280"
+  MOVIES_SERVICE_URL: "http://movies-service:3281"
+  EVENTS_SERVICE_URL: "http://events-service:3282"
+  
+  # Service Hosts and Ports (for proxy-service)
+  MONOLITH_HOST: "monolith"
+  MONOLITH_SERVICE_PORT_NUM: "3280"
+  MOVIES_SERVICE_HOST: "movies-service"  
+  MOVIES_SERVICE_PORT_NUM: "3281"
+  EVENTS_SERVICE_HOST: "events-service"
+  EVENTS_SERVICE_PORT_NUM: "3282"   
   
   # Strangler Fig configuration
   GRADUAL_MIGRATION: "true"

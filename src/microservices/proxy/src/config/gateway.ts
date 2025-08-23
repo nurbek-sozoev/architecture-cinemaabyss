@@ -19,7 +19,7 @@ export const serviceEndpoints: ServiceEndpoint[] = [
   {
     serviceName: 'monolith-service',
     host: process.env.MONOLITH_HOST || 'monolith',
-    port: parseInt(process.env.MONOLITH_PORT || '3280'),
+    port: parseInt(process.env.MONOLITH_SERVICE_PORT_NUM || '3280'),
     protocol: 'http',
     healthCheckPath: '/health',
     weight: 100 - gatewayConfig.stranglerFig.migrationPercent,
@@ -29,7 +29,7 @@ export const serviceEndpoints: ServiceEndpoint[] = [
   {
     serviceName: 'movies-service',
     host: process.env.MOVIES_SERVICE_HOST || 'movies-service',
-    port: parseInt(process.env.MOVIES_SERVICE_PORT || '3281'),
+    port: parseInt(process.env.MOVIES_SERVICE_PORT_NUM || '3281'),
     protocol: 'http',
     healthCheckPath: '/api/movies',
     weight: gatewayConfig.stranglerFig.migrationPercent,
@@ -39,7 +39,7 @@ export const serviceEndpoints: ServiceEndpoint[] = [
   {
     serviceName: 'events-service',
     host: process.env.EVENTS_SERVICE_HOST || 'events-service',
-    port: parseInt(process.env.EVENTS_SERVICE_PORT || '3282'),
+    port: parseInt(process.env.EVENTS_SERVICE_PORT_NUM || '3282'),
     protocol: 'http',
     healthCheckPath: '/health',
     weight: 100,
