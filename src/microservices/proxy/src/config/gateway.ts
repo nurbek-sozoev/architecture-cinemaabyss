@@ -87,6 +87,15 @@ export const routeConfig: RouteConfig[] = [
     retries: 3,
   },
   {
+    path: '/api/movies/health',
+    method: ['GET'],
+    serviceName: 'movies-service',
+    stripPath: false,
+    preserveHost: false,
+    timeout: 30000,
+    retries: 3,
+  },
+  {
     path: '/api/events',
     method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
     serviceName: 'events-service',
