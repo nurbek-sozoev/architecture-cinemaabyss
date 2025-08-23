@@ -70,7 +70,7 @@ class CinemaAbyssApiGateway {
   }
 
   private setupRoutes(): void {
-    this.router.get('/gateway/health', async (ctx: Context) => {
+    this.router.get('/health', async (ctx: Context) => {
       ctx.body = {
         status: 'healthy',
         timestamp: new Date().toISOString(),
@@ -78,7 +78,7 @@ class CinemaAbyssApiGateway {
       };
     });
 
-    this.router.get('/gateway/stats', async (ctx: Context) => {
+    this.router.get('/stats', async (ctx: Context) => {
       const stats = this.gateway.getStats();
       ctx.body = { gateway: stats };
     });

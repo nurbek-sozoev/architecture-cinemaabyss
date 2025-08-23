@@ -17,7 +17,7 @@ const port = process.env.PORT || 3282;
 app.use(helmet());
 app.use(cors({
   origin: '*',
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
   allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
 }));
 app.use(compress());

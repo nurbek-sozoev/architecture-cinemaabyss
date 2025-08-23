@@ -20,15 +20,29 @@ export class ProxyService {
     logger.info(`Proxying request to ${targetUrl}`, {
       method: request.method,
       service: endpoint.serviceName,
-      endpoint: `${endpoint.host}:${endpoint.port}`
+      endpoint: `${endpoint.host}:${endpoint.port}`,
+      hasBody: !!request.body,
+      bodySize: request.body ? JSON.stringify(request.body).length : 0,
+      queryParams: request.query
     });
 
     try {
+      const preparedHeaders = this.prepareHeaders(request.headers, endpoint);
+      
+      // Handle request data properly
+      let requestData = request.body;
+      
+      // Ensure Content-Length is set for POST requests
+      if (requestData && request.method.toUpperCase() !== 'GET') {
+        const dataString = typeof requestData === 'string' ? requestData : JSON.stringify(requestData);
+        preparedHeaders['content-length'] = Buffer.byteLength(dataString, 'utf8').toString();
+      }
+
       const axiosConfig = {
         method: request.method,
         url: targetUrl,
-        headers: this.prepareHeaders(request.headers, endpoint),
-        data: request.body,
+        headers: preparedHeaders,
+        data: requestData,
         params: request.query,
         timeout: timeout || this.axiosTimeout,
         validateStatus: () => true,
@@ -60,7 +74,9 @@ export class ProxyService {
         error: error.message,
         responseTime,
         code: error.code,
-        timeout: error.code === 'ECONNABORTED'
+        timeout: error.code === 'ECONNABORTED',
+        stack: error.stack?.substring(0, 500),
+        timestamp: new Date().toISOString()
       });
 
       return {
@@ -86,9 +102,9 @@ export class ProxyService {
   private buildTargetUrl(endpoint: ServiceEndpoint, originalUrl: string): string {
     const baseUrl = `${endpoint.protocol}://${endpoint.host}:${endpoint.port}`;
     
-    const path = originalUrl.startsWith('/') ? originalUrl.slice(1) : originalUrl;
+    const normalizedPath = originalUrl.startsWith('/') ? originalUrl : `/${originalUrl}`;
     
-    return `${baseUrl}/${path}`;
+    return `${baseUrl}${normalizedPath}`;
   }
 
   private prepareHeaders(
