@@ -22,7 +22,7 @@ export const serviceEndpoints: ServiceEndpoint[] = [
     port: parseInt(process.env.MONOLITH_SERVICE_PORT_NUM || '3280'),
     protocol: 'http',
     healthCheckPath: '/health',
-    weight: 100 - gatewayConfig.stranglerFig.migrationPercent,
+    weight: gatewayConfig.stranglerFig.gradualMigration ? 100 - gatewayConfig.stranglerFig.migrationPercent : 100,
     isHealthy: true,
     lastHealthCheck: null,
   },
