@@ -12,10 +12,10 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  MONOLITH_IMAGE_NAME: ${{ github.repository }}/monolith
-  MOVIES_SERVICE_IMAGE_NAME: ${{ github.repository }}/movies-service
-  EVENTS_SERVICE_IMAGE_NAME: ${{ github.repository }}/events-service
-  PROXY_SERVICE_IMAGE_NAME: ${{ github.repository }}/proxy-service
+  MONOLITH_IMAGE_NAME: ghcr.io/sozoev/architect-sprint2/monolith
+  MOVIES_SERVICE_IMAGE_NAME: ghcr.io/sozoev/architect-sprint2/movies-service
+  EVENTS_SERVICE_IMAGE_NAME: ghcr.io/sozoev/architect-sprint2/events-service
+  PROXY_SERVICE_IMAGE_NAME: ghcr.io/sozoev/architect-sprint2/proxy-service
 
 jobs:
   build-and-push:
@@ -42,7 +42,7 @@ jobs:
         id: meta-monolith
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.MONOLITH_IMAGE_NAME }}
+          images: ${{ env.MONOLITH_IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -64,7 +64,7 @@ jobs:
         id: meta-movies
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.MOVIES_SERVICE_IMAGE_NAME }}
+          images: ${{ env.MOVIES_SERVICE_IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -86,7 +86,7 @@ jobs:
         id: meta-events
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.EVENTS_SERVICE_IMAGE_NAME }}
+          images: ${{ env.EVENTS_SERVICE_IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -108,7 +108,7 @@ jobs:
         id: meta-proxy
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.PROXY_SERVICE_IMAGE_NAME }}
+          images: ${{ env.PROXY_SERVICE_IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
