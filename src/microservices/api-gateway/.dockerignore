@@ -5,6 +5,8 @@ dist
 .gitignore
 README.md
 .env
+.env.local
+.env.*.local
 .nyc_output
 coverage
 .nyc_output

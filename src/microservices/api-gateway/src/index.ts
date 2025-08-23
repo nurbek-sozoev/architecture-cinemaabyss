@@ -1,5 +1,6 @@
 import cors from '@koa/cors';
 import Router from '@koa/router';
+import 'dotenv/config';
 import Koa, { Context } from 'koa';
 import { koaBody } from 'koa-body';
 import compress from 'koa-compress';
