@@ -77,25 +77,6 @@ export const routeConfig: RouteConfig[] = [
     retries: 3,
   },
   {
-    path: '/api/movies/health',
-    method: ['GET'],
-    serviceName: 'movies-service',
-    stripPath: false,
-    preserveHost: false,
-    timeout: 30000,
-    retries: 3,
-  },
-  // Movies are load balanced
-  {
-    path: '/api/movies',
-    method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
-    serviceName: 'movies-load-balanced',
-    stripPath: false,
-    preserveHost: false,
-    timeout: 30000,
-    retries: 3,
-  },
-  {
     path: '/api/events',
     method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
     serviceName: 'events-service',
@@ -105,6 +86,43 @@ export const routeConfig: RouteConfig[] = [
     retries: 3,
   }
 ];
+
+if (gatewayConfig.stranglerFig.gradualMigration) {
+  routeConfig.push(...[
+    {
+      path: '/api/movies/health',
+      method: ['GET'],
+      serviceName: 'movies-service',
+      stripPath: false,
+      preserveHost: false,
+      timeout: 30000,
+      retries: 3,
+    },
+    // Requests are routed to movies-load-balanced
+    {
+      path: '/api/movies',
+      method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
+      serviceName: 'movies-load-balanced',
+      stripPath: false,
+      preserveHost: false,
+      timeout: 30000,
+      retries: 3,
+    }
+  ]);
+} else {
+  // Requests are routed to monolith-service
+  routeConfig.push(...[
+    {
+      path: '/api/movies',
+      method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
+      serviceName: 'monolith-service',
+      stripPath: false,
+      preserveHost: false,
+      timeout: 30000,
+      retries: 3,
+    }
+  ]);
+}
 
 export const serviceGroups = new Map<string, string[]>([
   ['movies-load-balanced', ['monolith-service', 'movies-service']],
