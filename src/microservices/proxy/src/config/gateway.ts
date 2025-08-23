@@ -51,7 +51,16 @@ export const serviceEndpoints: ServiceEndpoint[] = [
 export const routeConfig: RouteConfig[] = [
   {
     path: '/api/movies',
-    method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    method: ['GET'],
+    serviceName: 'movies-load-balanced',
+    stripPath: false,
+    preserveHost: false,
+    timeout: 30000,
+    retries: 3,
+  },
+  {
+    path: '/api/movies/:id',
+    method: ['GET'],
     serviceName: 'movies-load-balanced',
     stripPath: false,
     preserveHost: false,
