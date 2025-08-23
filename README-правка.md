@@ -98,9 +98,10 @@ GitHub Actions для непрерывной интеграции и разве�
 1. Необходимо, чтобы был установлен docker и docker-compose.
 
 2. Запускаем сервисы с помощью Docker Compose:
-   ```bash
-   docker-compose up -d
-   ```
+
+```bash
+docker-compose up -d
+```
 
 После запуска сервисы доступны:
 
@@ -168,6 +169,34 @@ kubectl apply -f src/kubernetes/events-service.yaml
 
 ```bash
 kubectl apply -f src/kubernetes/proxy-service.yaml
+```
+
+7. Добавьте addon ingress
+
+```bash
+minikube addons enable ingress
+```
+
+```bash
+kubectl apply -f src/kubernetes/ingress.yaml
+```
+
+8. Добавьте в /etc/hosts
+
+```bash
+127.0.0.1 cinemaabyss.example.com
+```
+
+9. Вызовите
+
+```bash
+minikube tunnel
+```
+
+10. Запустите тесты из папки tests/postman
+
+```bash
+ npm run test:kubernetes
 ```
 
 ### Развертывание через CI/CD
