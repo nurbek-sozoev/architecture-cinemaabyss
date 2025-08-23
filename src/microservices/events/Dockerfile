@@ -40,7 +40,7 @@ RUN chown -R events:events /app
 USER events
 
 # Expose the correct port
-EXPOSE 8082
+EXPOSE 3282
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

@@ -28,12 +28,13 @@ spec:
           value: "production"
         - name: PORT
           value: "3200"
-        - name: MOVIES_SERVICE_URL
-          value: "http://movies-service:8081"
-        - name: EVENTS_SERVICE_URL
-          value: "http://events-service:8082"
         - name: MONOLITH_SERVICE_URL
-          value: "http://monolith:8080"
+          value: "http://monolith:3280"
+        - name: MOVIES_SERVICE_URL
+          value: "http://movies-service:3281"
+        - name: EVENTS_SERVICE_URL
+          value: "http://events-service:3282"
+
         resources:
           limits:
             cpu: 500m
