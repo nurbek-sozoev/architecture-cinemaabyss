@@ -20,25 +20,3 @@ spec:
                 name: proxy-service
                 port:
                   number: 3200
-          - path: /api/monolith
-            pathType: Prefix
-            backend:
-              service:
-                name: monolith
-                port:
-                  number: 3280
-          - path: /api/movies
-            pathType: Prefix
-            backend:
-              service:
-                name: movies-service
-                port:
-                  number: 3281
-          - path: /api/events
-            pathType: Prefix
-            backend:
-              service:
-                name: events-service
-                port:
-                  number: 3282
-
