@@ -12,10 +12,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  MONOLITH_IMAGE_NAME: ${{ env.REGISTRY }}/${{ github.repository }}/monolith
-  MOVIES_SERVICE_IMAGE_NAME: ${{ env.REGISTRY }}/${{ github.repository }}/movies-service
-  EVENTS_SERVICE_IMAGE_NAME: ${{ env.REGISTRY }}/${{ github.repository }}/events-service
-  PROXY_SERVICE_IMAGE_NAME: ${{ env.REGISTRY }}/${{ github.repository }}/proxy-service
+  IMAGE_PREFIX: ghcr.io/${{ github.repository }}
 
 jobs:
   build-and-push:
@@ -44,7 +41,7 @@ jobs:
         id: meta-monolith
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.MONOLITH_IMAGE_NAME }}
+          images: ${{ env.IMAGE_PREFIX }}/monolith
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -66,7 +63,7 @@ jobs:
         id: meta-movies
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.MOVIES_SERVICE_IMAGE_NAME }}
+          images: ${{ env.IMAGE_PREFIX }}/movies-service
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -88,7 +85,7 @@ jobs:
         id: meta-events
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.EVENTS_SERVICE_IMAGE_NAME }}
+          images: ${{ env.IMAGE_PREFIX }}/events-service
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -110,7 +107,7 @@ jobs:
         id: meta-proxy
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.PROXY_SERVICE_IMAGE_NAME }}
+          images: ${{ env.IMAGE_PREFIX }}/proxy-service
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
