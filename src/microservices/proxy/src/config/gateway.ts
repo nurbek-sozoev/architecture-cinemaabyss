@@ -76,20 +76,20 @@ export const routeConfig: RouteConfig[] = [
     timeout: 30000,
     retries: 3,
   },
-  // Movies are load balanced
   {
-    path: '/api/movies',
-    method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
-    serviceName: 'movies-load-balanced',
+    path: '/api/movies/health',
+    method: ['GET'],
+    serviceName: 'movies-service',
     stripPath: false,
     preserveHost: false,
     timeout: 30000,
     retries: 3,
   },
+  // Movies are load balanced
   {
-    path: '/api/movies/health',
-    method: ['GET'],
-    serviceName: 'movies-service',
+    path: '/api/movies',
+    method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
+    serviceName: 'movies-load-balanced',
     stripPath: false,
     preserveHost: false,
     timeout: 30000,
