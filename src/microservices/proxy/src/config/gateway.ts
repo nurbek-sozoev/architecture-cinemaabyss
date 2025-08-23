@@ -51,7 +51,7 @@ export const serviceEndpoints: ServiceEndpoint[] = [
 export const routeConfig: RouteConfig[] = [
   {
     path: '/api/users',
-    method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
     serviceName: 'monolith-service',
     stripPath: false,
     preserveHost: false,
@@ -79,7 +79,7 @@ export const routeConfig: RouteConfig[] = [
   // Movies are load balanced
   {
     path: '/api/movies',
-    method: ['GET'],
+    method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
     serviceName: 'movies-load-balanced',
     stripPath: false,
     preserveHost: false,
