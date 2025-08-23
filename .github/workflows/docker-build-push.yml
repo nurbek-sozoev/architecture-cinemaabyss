@@ -12,10 +12,10 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  MONOLITH_IMAGE_NAME: ghcr.io/sozoev/architect-sprint2/monolith
-  MOVIES_SERVICE_IMAGE_NAME: ghcr.io/sozoev/architect-sprint2/movies-service
-  EVENTS_SERVICE_IMAGE_NAME: ghcr.io/sozoev/architect-sprint2/events-service
-  PROXY_SERVICE_IMAGE_NAME: ghcr.io/sozoev/architect-sprint2/proxy-service
+  MONOLITH_IMAGE_NAME: ${{ env.REGISTRY }}/${{ github.repository }}/monolith
+  MOVIES_SERVICE_IMAGE_NAME: ${{ env.REGISTRY }}/${{ github.repository }}/movies-service
+  EVENTS_SERVICE_IMAGE_NAME: ${{ env.REGISTRY }}/${{ github.repository }}/events-service
+  PROXY_SERVICE_IMAGE_NAME: ${{ env.REGISTRY }}/${{ github.repository }}/proxy-service
 
 jobs:
   build-and-push:
@@ -23,6 +23,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+      attestations: write
+      id-token: write
 
     steps:
       - name: Checkout repository

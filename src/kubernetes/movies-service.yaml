@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: movies-service
-        image: ghcr.io/sozoev/architect-sprint2/movies-service:latest
+        image: ghcr.io/nurbek-sozoev/architecture-cinemaabyss/movies-service:latest
         ports:
         - containerPort: 8081
         env:

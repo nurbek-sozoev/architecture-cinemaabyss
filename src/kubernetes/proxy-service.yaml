@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: proxy-service
-        image: ghcr.io/sozoev/architect-sprint2/proxy-service:latest
+        image: ghcr.io/nurbek-sozoev/architecture-cinemaabyss/proxy-service:latest
         ports:
         - containerPort: 3200
         env:

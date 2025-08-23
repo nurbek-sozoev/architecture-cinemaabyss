@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: monolith
-        image:  ghcr.io/sozoev/architect-sprint2/monolith:latest
+        image: ghcr.io/nurbek-sozoev/architecture-cinemaabyss/monolith:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 3280
