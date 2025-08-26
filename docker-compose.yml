@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database
   postgres:
@@ -38,12 +36,12 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"
+      - "9093:9092"
     environment:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "movie-events:1:1,user-events:1:1,payment-events:1:1"
+      KAFKA_CREATE_TOPICS: "movie-events:1:1,user-events:1:1,payment-events:1:1,cinema-events:1:1"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -59,9 +57,9 @@ services:
     depends_on:
       - postgres
     ports:
-      - "8080:8080"
+      - "3280:3280"
     environment:
-      PORT: 8080
+      PORT: 3280
       DB_CONNECTION_STRING: postgres://postgres:postgres_password@postgres:5432/cinemaabyss?sslmode=disable
     networks:
       - cinemaabyss-network
@@ -75,9 +73,9 @@ services:
     depends_on:
       - postgres
     ports:
-      - "8081:8081"
+      - "3281:3281"
     environment:
-      PORT: 8081
+      PORT: 3281
       DB_CONNECTION_STRING: postgres://postgres:postgres_password@postgres:5432/cinemaabyss?sslmode=disable
     networks:
       - cinemaabyss-network
@@ -89,37 +87,74 @@ services:
       dockerfile: Dockerfile
     container_name: cinemaabyss-events-service
     depends_on:
-      - postgres
       - kafka
     ports:
-      - "8082:8082"
+      - "3282:3282"
     environment:
-      PORT: 8082
+      PORT: 3282
+      NODE_ENV: production
+      LOG_LEVEL: info
+      KAFKA_CLIENT_ID: events-service
       KAFKA_BROKERS: kafka:9092
+      KAFKA_TOPIC: cinema-events
+      KAFKAJS_NO_PARTITIONER_WARNING: 1
     networks:
       - cinemaabyss-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f http://localhost:3282/api/events/health || exit 1",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
-  # Proxy Service (API Gateway)
+  # API Gateway
   proxy-service:
     build:
       context: ./src/microservices/proxy
       dockerfile: Dockerfile
     container_name: cinemaabyss-proxy-service
+    restart: unless-stopped
     depends_on:
-      - monolith
-      - movies-service
-      - events-service
-    ports:
-      - "8000:8000"
+      monolith:
+        condition: service_started
+      movies-service:
+        condition: service_started
+      events-service:
+        condition: service_started
     environment:
-      PORT: 8000
-      MONOLITH_URL: http://monolith:8080
-      MOVIES_SERVICE_URL: http://movies-service:8081
-      EVENTS_SERVICE_URL: http://events-service:8082
-      GRADUAL_MIGRATION: "true"
-      MOVIES_MIGRATION_PERCENT: "50"
+      PORT: 3200
+      HOST: 0.0.0.0
+      NODE_ENV: production
+
+      LOG_LEVEL: debug
+
+      CORS_ENABLED: "true"
+      REQUEST_TIMEOUT: 30000
+      HEALTH_CHECK_INTERVAL: 10000
+
+      GRADUAL_MIGRATION: ${GRADUAL_MIGRATION:-true}
+      MOVIES_MIGRATION_PERCENT: ${MOVIES_MIGRATION_PERCENT:-20}
+
+      MONOLITH_HOST: monolith
+      MONOLITH_SERVICE_PORT_NUM: 3280
+      MOVIES_SERVICE_HOST: movies-service
+      MOVIES_SERVICE_PORT_NUM: 3281
+      EVENTS_SERVICE_HOST: events-service
+      EVENTS_SERVICE_PORT_NUM: 3282
+    ports:
+      - "3200:3200"
     networks:
       - cinemaabyss-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3200/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   # Kafka UI for monitoring Kafka
   kafka-ui:
@@ -128,7 +163,7 @@ services:
     depends_on:
       - kafka
     ports:
-      - "8090:8080"
+      - "3290:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: cinemaabyss
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
@@ -138,6 +173,7 @@ services:
 
 volumes:
   postgres-data:
+  kong-config:
 
 networks:
   cinemaabyss-network:

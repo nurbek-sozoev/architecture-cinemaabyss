@@ -8,6 +8,7 @@ metadata:
     app: proxy-service
     app.kubernetes.io/name: {{ include "cinemaabyss.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: api-gateway
 spec:
   replicas: {{ .Values.proxyService.replicas }}
   selector:
@@ -22,10 +23,74 @@ spec:
     metadata:
       labels:
         app: proxy-service
+        app.kubernetes.io/name: {{ include "cinemaabyss.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations: {}
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: dockerconfigsecret
+      {{- end }}
       containers:
       - name: proxy-service
-        ..... тут
+        image: {{ .Values.proxyService.image.repository }}:{{ .Values.proxyService.image.tag }}
+        imagePullPolicy: {{ .Values.proxyService.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.proxyService.service.targetPort }}
+          name: proxy
+          protocol: TCP
+        env:
+        # Node.js настройки
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "{{ .Values.proxyService.service.targetPort }}"
+        - name: HOST
+          value: "0.0.0.0"
+      
+        - name: MONOLITH_SERVICE_URL
+          value: "http://monolith:{{ .Values.monolith.service.port }}"
+        - name: MOVIES_SERVICE_URL
+          value: "http://movies-service:{{ .Values.moviesService.service.port }}"
+        - name: EVENTS_SERVICE_URL
+          value: "http://events-service:{{ .Values.eventsService.service.port }}"
+        
+        # Переменные для отслеживания миграции Strangler Fig
+        - name: GRADUAL_MIGRATION
+          valueFrom:
+            configMapKeyRef:
+              name: cinemaabyss-config
+              key: GRADUAL_MIGRATION
+        - name: MOVIES_MIGRATION_PERCENT
+          valueFrom:
+            configMapKeyRef:
+              name: cinemaabyss-config
+              key: MOVIES_MIGRATION_PERCENT
+        
+        resources:
+          {{- toYaml .Values.proxyService.resources | nindent 10 }}
+        
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: proxy
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: proxy
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 3
+
+      restartPolicy: Always
+      
 ---
 apiVersion: v1
 kind: Service
@@ -36,7 +101,14 @@ metadata:
     app: proxy-service
     app.kubernetes.io/name: {{ include "cinemaabyss.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: api-gateway
 spec:
+  type: {{ .Values.proxyService.service.type }}
+  ports:
+  - port: {{ .Values.proxyService.service.port }}
+    targetPort: {{ .Values.proxyService.service.targetPort }}
+    protocol: TCP
+    name: http
   selector:
-    ... и тут
+    app: proxy-service
 {{- end }}

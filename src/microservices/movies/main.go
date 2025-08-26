@@ -35,7 +35,7 @@ func main() {
 	// Start server
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8081" // Note: Using a different port than the monolith
+		port = "3281" // Note: Using a different port than the monolith
 	}
 	log.Printf("Starting movies microservice on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
@@ -121,6 +121,7 @@ func getAllMovies(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("X-Service-Name", "movies-microservice")
 	json.NewEncoder(w).Encode(movies)
 }
 

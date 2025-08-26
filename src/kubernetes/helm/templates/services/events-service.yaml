@@ -25,7 +25,38 @@ spec:
     spec:
       containers:
       - name: events-service
-       .... тут
+        image: {{ .Values.eventsService.image.repository }}:{{ .Values.eventsService.image.tag }}
+        imagePullPolicy: {{ .Values.eventsService.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.eventsService.service.targetPort }}
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "{{ .Values.eventsService.service.targetPort }}"
+        - name: KAFKA_BROKERS
+          value: "kafka:9092"
+        - name: KAFKA_CLIENT_ID
+          value: "events-service"
+        - name: LOG_LEVEL
+          value: "info"
+        resources:
+          {{- toYaml .Values.eventsService.resources | nindent 10 }}
+        readinessProbe:
+          httpGet:
+            path: /api/events/health
+            port: {{ .Values.eventsService.service.targetPort }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /api/events/health
+            port: {{ .Values.eventsService.service.targetPort }}
+          initialDelaySeconds: 15
+          periodSeconds: 10
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: dockerconfigjson
 ---
 apiVersion: v1
 kind: Service
@@ -37,5 +68,12 @@ metadata:
     app.kubernetes.io/name: {{ include "cinemaabyss.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
- ........ и тут
+  type: {{ .Values.eventsService.service.type }}
+  ports:
+  - port: {{ .Values.eventsService.service.port }}
+    targetPort: {{ .Values.eventsService.service.targetPort }}
+    protocol: TCP
+    name: http
+  selector:
+    app: events-service
 {{- end }}

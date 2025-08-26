@@ -60,7 +60,7 @@ func main() {
 	// Start server
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "3280"
 	}
 	log.Printf("Starting server on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
@@ -214,6 +214,7 @@ func getAllMovies(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("X-Service-Name", "monolith-service")
 	json.NewEncoder(w).Encode(movies)
 }
 

@@ -15,7 +15,16 @@ data:
 
   # Service URLs
   MONOLITH_URL: "http://monolith:{{ .Values.monolith.service.port }}"
-  MOVIES_SERVICE_URL: "http://movies:{{ .Values.moviesService.service.port }}"
+  MOVIES_SERVICE_URL: "http://movies-service:{{ .Values.moviesService.service.port }}"
+  EVENTS_SERVICE_URL: "http://events-service:{{ .Values.eventsService.service.port }}"
+  
+  # Service Hosts and Ports (for proxy-service)
+  MONOLITH_HOST: "monolith"
+  MONOLITH_SERVICE_PORT_NUM: "{{ .Values.monolith.service.port }}"
+  MOVIES_SERVICE_HOST: "movies-service"
+  MOVIES_SERVICE_PORT_NUM: "{{ .Values.moviesService.service.port }}"
+  EVENTS_SERVICE_HOST: "events-service"
+  EVENTS_SERVICE_PORT_NUM: "{{ .Values.eventsService.service.port }}"
   
   # Strangler Fig configuration
   GRADUAL_MIGRATION: {{ .Values.config.gradualMigration | quote }}

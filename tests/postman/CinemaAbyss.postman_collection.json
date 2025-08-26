@@ -23,7 +23,7 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});"
                 ],
@@ -47,11 +47,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Response is an array\", function () {",
+                  "pm.test(\"Response should be an array\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(Array.isArray(jsonData)).to.be.true;",
                   "});"
@@ -86,11 +86,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
+                  "pm.test(\"Status should be 201\", function () {",
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "pm.test(\"Response has id\", function () {",
+                  "pm.test(\"Response should have id\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.id).to.exist;",
                   "    pm.collectionVariables.set(\"userId\", jsonData.id);",
@@ -122,11 +122,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"User ID matches\", function () {",
+                  "pm.test(\"User ID should be matches\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.id).to.equal(parseInt(pm.collectionVariables.get(\"userId\")));",
                   "});"
@@ -151,11 +151,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Response is an array\", function () {",
+                  "pm.test(\"Response should be an array\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(Array.isArray(jsonData)).to.be.true;",
                   "});"
@@ -190,11 +190,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
+                  "pm.test(\"Status should be 201\", function () {",
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "pm.test(\"Response has id\", function () {",
+                  "pm.test(\"Response should have id\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.id).to.exist;",
                   "    pm.collectionVariables.set(\"movieId\", jsonData.id);",
@@ -226,11 +226,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Movie ID matches\", function () {",
+                  "pm.test(\"Movie ID should be matches\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.id).to.equal(parseInt(pm.collectionVariables.get(\"movieId\")));",
                   "});"
@@ -265,11 +265,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
+                  "pm.test(\"Status should be 201\", function () {",
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "pm.test(\"Response has id\", function () {",
+                  "pm.test(\"Response should have id\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.id).to.exist;",
                   "    pm.collectionVariables.set(\"paymentId\", jsonData.id);",
@@ -301,11 +301,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Payment ID matches\", function () {",
+                  "pm.test(\"Payment ID should be matches\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.id).to.equal(parseInt(pm.collectionVariables.get(\"paymentId\")));",
                   "});"
@@ -340,11 +340,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
+                  "pm.test(\"Status should be 201\", function () {",
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "pm.test(\"Response has id\", function () {",
+                  "pm.test(\"Response should have id\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.id).to.exist;",
                   "    pm.collectionVariables.set(\"subscriptionId\", jsonData.id);",
@@ -376,11 +376,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Subscription ID matches\", function () {",
+                  "pm.test(\"Subscription ID should be matches\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.id).to.equal(parseInt(pm.collectionVariables.get(\"subscriptionId\")));",
                   "});"
@@ -410,11 +410,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Status is true\", function () {",
+                  "pm.test(\"Status should be true\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.status).to.be.true;",
                   "});"
@@ -439,11 +439,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Response is an array\", function () {",
+                  "pm.test(\"Response should be an array\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(Array.isArray(jsonData)).to.be.true;",
                   "});"
@@ -478,11 +478,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
+                  "pm.test(\"Status should be 201\", function () {",
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "pm.test(\"Response has id\", function () {",
+                  "pm.test(\"Response should have id\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.id).to.exist;",
                   "    pm.collectionVariables.set(\"msMovieId\", jsonData.id);",
@@ -514,11 +514,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Movie ID matches\", function () {",
+                  "pm.test(\"Movie ID should be matches\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.id).to.equal(parseInt(pm.collectionVariables.get(\"msMovieId\")));",
                   "});"
@@ -548,11 +548,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Status is true\", function () {",
+                  "pm.test(\"Status should be true\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.status).to.be.true;",
                   "});"
@@ -587,11 +587,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
+                  "pm.test(\"Status should be 201\", function () {",
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "pm.test(\"Response has status success\", function () {",
+                  "pm.test(\"Response should have status success\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.status).to.equal(\"success\");",
                   "});"
@@ -626,11 +626,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
+                  "pm.test(\"Status should be 201\", function () {",
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "pm.test(\"Response has status success\", function () {",
+                  "pm.test(\"Response should have status success\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.status).to.equal(\"success\");",
                   "});"
@@ -665,11 +665,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
+                  "pm.test(\"Status should be 201\", function () {",
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "pm.test(\"Response has status success\", function () {",
+                  "pm.test(\"Response should have status success\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.status).to.equal(\"success\");",
                   "});"
@@ -699,7 +699,7 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});"
                 ],
@@ -723,11 +723,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Response is an array\", function () {",
+                  "pm.test(\"Response should be an array\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(Array.isArray(jsonData)).to.be.true;",
                   "});"
@@ -752,11 +752,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
+                  "pm.test(\"Status should be 200\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Response is an array\", function () {",
+                  "pm.test(\"Response should be an array\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(Array.isArray(jsonData)).to.be.true;",
                   "});"
@@ -772,19 +772,19 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:8080"
+      "value": "http://localhost:3280"
     },
     {
       "key": "moviesServiceUrl",
-      "value": "http://localhost:8081"
+      "value": "http://localhost:3281"
     },
     {
       "key": "eventsServiceUrl",
-      "value": "http://localhost:8082"
+      "value": "http://localhost:3282"
     },
     {
       "key": "proxyServiceUrl",
-      "value": "http://localhost:8000"
+      "value": "http://localhost:3200"
     },
     {
       "key": "userId",

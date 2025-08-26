@@ -5,30 +5,27 @@ metadata:
   namespace: cinemaabyss
   labels:
     app: movies-service
+    version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: movies-service
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      version: v1
   template:
     metadata:
       labels:
         app: movies-service
+        version: v1
     spec:
       containers:
       - name: movies-service
-        image: ghcr.io/db-exp/cinemaabysstest/movies-service:latest
-        imagePullPolicy: Always
+        image: ghcr.io/nurbek-sozoev/architecture-cinemaabyss/movies-service:latest
         ports:
-        - containerPort: 8081
+        - containerPort: 3281
         env:
         - name: PORT
-          value: "8081"
+          value: "3281"
         - name: DB_CONNECTION_STRING
           value: "postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable"
         envFrom:
@@ -38,36 +35,38 @@ spec:
             name: cinemaabyss-secrets
         resources:
           limits:
-            cpu: "300m"
-            memory: "256Mi"
+            cpu: 500m
+            memory: 512Mi
           requests:
-            cpu: "100m"
-            memory: "128Mi"
+            cpu: 250m
+            memory: 256Mi
         readinessProbe:
           httpGet:
             path: /api/movies/health
-            port: 8081
-          initialDelaySeconds: 5
-          periodSeconds: 10
+            port: 3281
+          initialDelaySeconds: 10
+          periodSeconds: 5
         livenessProbe:
           httpGet:
             path: /api/movies/health
-            port: 8081
+            port: 3281
           initialDelaySeconds: 15
-          periodSeconds: 20
-      restartPolicy: Always
-      imagePullSecrets:
-        - name: dockerconfigjson
+          periodSeconds: 10
+        imagePullPolicy: Always
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: movies-service
   namespace: cinemaabyss
+  labels:
+    app: movies-service
 spec:
+  type: ClusterIP
+  ports:
+  - port: 3281
+    targetPort: 3281
+    protocol: TCP
+    name: http
   selector:
     app: movies-service
-  ports:
-  - port: 8081
-    targetPort: 8081
-  type: ClusterIP

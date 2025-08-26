@@ -5,7 +5,7 @@ global:
 
 # Image pull secrets
 imagePullSecrets:
-  dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaGNyLmlvIjogewoJCQkiYXV0aCI6
+  dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaGNyLmlvIjogewoJCQkiYXV0aCI6ICJiblZ5WW1WckxYTnZlbTlsZGpwbmFIQmZkM00wTW5KMWIxWk9SVXhrZGtkcFNGUkNjWFZxYUdOVmVEaEdhM1prTXpGbVJHZGsiCgkJfQoJfSwKCSJjdXJyZW50Q29udGV4dCI6ICJwb2RtYW4iLAoJImNsaVBsdWdpbnNFeHRyYURpcnMiOiBbCgkJIi9vcHQvaG9tZWJyZXcvbGliL2RvY2tlci9jbGktcGx1Z2lucyIKCV0KfQo=
 # Database configuration
 database:
   host: postgres
@@ -29,11 +29,31 @@ database:
     size: 10Gi
     accessMode: ReadWriteOnce
 
+# Proxy service configuration
+proxyService:
+  enabled: true
+  image:
+    repository: ghcr.io/nurbek-sozoev/architecture-cinemaabyss/proxy-service
+    tag: latest
+    pullPolicy: Always
+  replicas: 1
+  resources:
+    limits:
+      cpu: 300m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  service:
+    port: 3200
+    targetPort: 3200
+    type: ClusterIP
+
 # Monolith configuration
 monolith:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/monolith
+    repository: ghcr.io/nurbek-sozoev/architecture-cinemaabyss/monolith
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -45,35 +65,15 @@ monolith:
       cpu: 100m
       memory: 128Mi
   service:
-    port: 8080
-    targetPort: 8080
-    type: ClusterIP
-
-# Proxy service configuration
-proxyService:
-  enabled: true
-  image:
-    repository: ghcr.io/db-exp/cinemaabysstest/proxy-service
-    tag: latest
-    pullPolicy: Always
-  replicas: 1
-  resources:
-    limits:
-      cpu: 300m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-  service:
-    port: 80
-    targetPort: 8000
+    port: 3280
+    targetPort: 3280
     type: ClusterIP
 
 # Movies service configuration
 moviesService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/movies-service
+    repository: ghcr.io/nurbek-sozoev/architecture-cinemaabyss/movies-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -85,15 +85,15 @@ moviesService:
       cpu: 100m
       memory: 128Mi
   service:
-    port: 8081
-    targetPort: 8081
+    port: 3281
+    targetPort: 3281
     type: ClusterIP
 
 # Events service configuration
 eventsService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/events-service
+    repository: ghcr.io/nurbek-sozoev/architecture-cinemaabyss/events-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -105,8 +105,8 @@ eventsService:
       cpu: 100m
       memory: 128Mi
   service:
-    port: 8082
-    targetPort: 8082
+    port: 3282
+    targetPort: 3282
     type: ClusterIP
 
 # Kafka configuration
@@ -129,13 +129,7 @@ kafka:
     size: 5Gi
     accessMode: ReadWriteOnce
   topics:
-    - name: movie-events
-      partitions: 1
-      replicationFactor: 1
-    - name: user-events
-      partitions: 1
-      replicationFactor: 1
-    - name: payment-events
+    - name: cinema-events
       partitions: 1
       replicationFactor: 1
 
@@ -172,14 +166,10 @@ ingress:
         - path: /
           pathType: Prefix
           service: proxy-service
-          port: 80
-        - path: /api/events
-          pathType: Prefix
-          service: events-service
-          port: 8082
+          port: 3200
 
 # Application configuration
 config:
   # Strangler Fig configuration
   gradualMigration: "true"
-  moviesMigrationPercent: "100"
+  moviesMigrationPercent: "50"

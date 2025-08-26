@@ -4,25 +4,25 @@
   "values": [
     {
       "key": "baseUrl",
-      "value": "http://monolith:8080",
+      "value": "http://monolith:3280",
       "type": "default",
       "enabled": true
     },
     {
       "key": "moviesServiceUrl",
-      "value": "http://movies-service:8081",
+      "value": "http://movies-service:3281",
       "type": "default",
       "enabled": true
     },
     {
       "key": "eventsServiceUrl",
-      "value": "http://events-service:8082",
+      "value": "http://events-service:3282",
       "type": "default",
       "enabled": true
     },
     {
       "key": "proxyServiceUrl",
-      "value": "http://proxy-service:8000",
+      "value": "http://proxy-service:3200",
       "type": "default",
       "enabled": true
     }
